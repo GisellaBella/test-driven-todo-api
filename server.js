@@ -77,13 +77,17 @@ app.post('/api/todos', function create(req, res) {
 
 
 app.get('/api/todos/:id', function show(req, res) {
-  //var toDoId = JSON.stringify(todos[i]._id);
-  for (var i=0;i<todos.length;i++) 
-  if (todos[i]._id==req.params.id);
-    res.json(todos[i]);
+ for (var i=0;i<todos.length;i++){
+    var toDoId = JSON.stringify(todos[i]._id);
+    console.log (toDoId);
+    if (todos[i]._id == req.params.id) {
+      res.json(todos[i]);
+    }
+    
   /* This endpoint will return a single todo with the
    * id specified in the route parameter (:id)
    */
+ }
 });
 
 
@@ -92,12 +96,21 @@ app.put('/api/todos/:id', function update(req, res) {
    * id specified in the route parameter (:id) and respond
    * with the newly updated todo.
    */
-    var idToUpdate = JSON.stringify(todos[i]._id);
-    for (var i=0;i<todo.length;i++) 
-    if (idToUpdate==req.params.id)
-    todos[idToUpdate].update(req.body);
-    res.json(todo[idToUpdate]);
-      });
+  var cur = parseInt(req.params.id);
+   var task = req.body.task;
+   var description = req.body.description;
+   var idToUpdate = function(){
+     for(var i=0; i< todos.length; i++){
+       if(todos[i]._id==cur){
+         todos[i].task = task;
+         todos[i].description = description;
+         return todos[i];
+       }
+     }
+   };
+   res.send(idToUpdate());
+});
+
 
 
 
@@ -105,14 +118,17 @@ app.delete('/api/todos/:id', function destroy(req, res) {
   /* This endpoint will delete a single todo with the
    * id specified in the route parameter (:id) and respond
    * with deleted todo. */
-  var toDestroy = JSON.stringify(todos[i]._id);
-  for (var i=0;i<todo.length;i++) 
-  if (toDestroy==req.params.id)
-  todos.splice([i],1);
-  res.json(todos[i]);
-
-
-});
+    var toDestroy = parseInt(req.params.id);
+    var deleteID = function() {
+      for (var i=0;i<todos.length;i++) {
+        if (todos[i]._id==toDestroy){
+          todos.splice(i,1);
+          return todos;
+        }
+      }
+    };
+   res.send(deleteID());
+ });
 
 /**********
  * SERVER *
